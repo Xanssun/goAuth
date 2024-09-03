@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  postgres_db:
+    image: postgres:13.4
+    container_name: "postgres_db"
+    environment:
+      - POSTGRES_DB=auth_db
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=123qwe
+    volumes:
+      - auth_db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  go_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "go_app"
+    depends_on:
+      - postgres_db
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://app:123qwe@postgres_db:5432/auth_db?sslmode=disable
+
+volumes:
+  auth_db:
