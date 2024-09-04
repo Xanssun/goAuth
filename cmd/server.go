@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"goauth/config"
+	"goauth/internal/models"
 	"goauth/internal/routers"
 	"goauth/pkg/logging"
 	"net/http"
@@ -17,6 +18,10 @@ func Run() {
 
 	// Подключение к базе данных через GORM
 	config.ConnectDB()
+
+	// Автоматическое создание таблицы для модели User
+	config.DB.AutoMigrate(&models.User{})
+
 	defer config.CloseDB()
 
 	r := routers.SetupRouter()
